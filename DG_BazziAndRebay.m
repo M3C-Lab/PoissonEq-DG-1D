@@ -14,6 +14,8 @@ Omega_r = 1.0;
 u_exact = @(x) 5 * sin(4 * x) - 3 * x.^3 + 1;
 u_x = @(x) 20 * cos(4 * x) - 9 * x.^2;
 f = @(x) 80 * sin(4 * x) + 18 * x;
+u_xx = @(x) -f(x);
+u_xxx = @(x) -320 * cos(4 * x) + 18;
 
 % Dirichlet BC at Omega_l and Omega_r
 g_left = u_exact(Omega_l);
@@ -159,7 +161,7 @@ end
 uh = K \ F;
 
 % Postprocess
-[abs_error, u_normL2, u_normH1] = Postprocess(node, uh, u_exact, u_x, Omega_l, Omega_r, nLocBas, nElem, IEN);
+[abs_error, u_normL2, u_normH1, u_normH2, u_normH3] = Postprocess(node, uh, u_exact, u_x, u_xx, u_xxx, Omega_l, Omega_r, nLocBas, nElem, IEN);
 
 rel_error = abs_error / u_normL2
 

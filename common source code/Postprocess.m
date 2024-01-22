@@ -1,4 +1,4 @@
-function  [abs_error, u_normL2, u_normH1]  = Postprocess(node, uh, u_exact, u_x, Omega_l, Omega_r, nLocBas, nElem, IEN)
+function  [abs_error, u_normL2, u_normH1, u_normH2, u_normH3]  = Postprocess(node, uh, u_exact, u_x, u_xx, u_xxx, Omega_l, Omega_r, nLocBas, nElem, IEN)
 % Postpreocess
 
 % Plot
@@ -25,6 +25,8 @@ nqp = length(qp);
 abs_error = 0.0;
 u_normL2 = 0.0;
 u_normH1 = 0.0;
+u_normH2 = 0.0;
+u_normH3 = 0.0;
 
 for ee = 1 : nElem
     x_ele = zeros(1, nLocBas);
@@ -41,16 +43,22 @@ for ee = 1 : nElem
 
         u_qua = u_exact(Element.point_x);
         u_x_qua = u_x(Element.point_x);
+        u_xx_qua = u_xx(Element.point_x);
+        u_xxx_qua = u_xxx(Element.point_x);
 
         abs_error = abs_error + wq(qua) * Element.Jacobian * (uh_qua - u_qua)^2;
         u_normL2 = u_normL2 + wq(qua) * Element.Jacobian * u_qua^2;
         u_normH1 = u_normH1 + wq(qua) * Element.Jacobian * (u_qua^2 + u_x_qua^2);
+        u_normH2 = u_normH2 + wq(qua) * Element.Jacobian * (u_qua^2 + u_x_qua^2 + u_xx_qua^2);
+        u_normH3 = u_normH3 + wq(qua) * Element.Jacobian * (u_qua^2 + u_x_qua^2 + u_xx_qua^2 + u_xxx_qua^2);
     end
 end
 
 abs_error = sqrt(abs_error);
 u_normL2 = sqrt(u_normL2);
 u_normH1 = sqrt(u_normH1);
+u_normH2 = sqrt(u_normH2);
+u_normH3 = sqrt(u_normH3);
 
 return;
 end
